@@ -43,32 +43,32 @@ if __name__ == '__main__':
         companies = f.readlines()
     companies = [x.strip() for x in companies]
 
-    # for company in companies:
-    csvCursor = open('data/' + "Amazon" + '.csv', 'a', newline='')
-    csvWriter = csv.writer(csvCursor)
+    for company in companies:
+        csvCursor = open('data/twitter_data/' + company + '.csv', 'a', newline='')
+        csvWriter = csv.writer(csvCursor)
 
-    count = 0
-    for tweet in tweepy.Cursor(api.search, q="Amazon", count=10000000, lang="en", since="2000-01-01",
-                               include_entities=True).items():
-        if len(str(tweet.text).encode("utf-8", errors='ignore').split()) > 20:
-            try:
-                if sample_classify_text(client, str(tweet.text).encode("utf-8", errors='ignore')):
-                    print(count)
-                    count = count + 1
-                    csvWriter.writerow([str(tweet.created_at).encode("utf-8", errors='ignore').decode(),
-                                        str(tweet.id_str).encode("utf-8", errors='ignore'),
-                                        str(tweet.text).encode("utf-8", errors='ignore'),
-                                        str(tweet.user.id).encode("utf-8", errors='ignore'),
-                                        str(tweet.user.name).encode("utf-8", errors='ignore'),
-                                        str(tweet.user.screen_name).encode("utf-8", errors='ignore'),
-                                        str(tweet.user.location).encode("utf-8", errors='ignore'),
-                                        str(tweet.user.url).encode("utf-8", errors='ignore'),
-                                        str(tweet.user.description).encode("utf-8", errors='ignore'),
-                                        str(tweet.place).encode("utf-8", errors='ignore'),
-                                        find_key_in_dictionary(tweet.entities, "hashtags"),
-                                        find_key_in_dictionary(tweet.entities, "urls"),
-                                        find_key_in_dictionary(tweet.entities, "user_mentions")])
-            except:
-                print("exception")
+        count = 0
+        for tweet in tweepy.Cursor(api.search, q="Amazon", count=10000000, lang="en", since="2000-01-01",
+                                   include_entities=True).items():
+            if len(str(tweet.text).encode("utf-8", errors='ignore').split()) > 20:
+                try:
+                    if sample_classify_text(client, str(tweet.text).encode("utf-8", errors='ignore')):
+                        print(count)
+                        count = count + 1
+                        csvWriter.writerow([str(tweet.created_at).encode("utf-8", errors='ignore').decode(),
+                                            str(tweet.id_str).encode("utf-8", errors='ignore'),
+                                            str(tweet.text).encode("utf-8", errors='ignore'),
+                                            str(tweet.user.id).encode("utf-8", errors='ignore'),
+                                            str(tweet.user.name).encode("utf-8", errors='ignore'),
+                                            str(tweet.user.screen_name).encode("utf-8", errors='ignore'),
+                                            str(tweet.user.location).encode("utf-8", errors='ignore'),
+                                            str(tweet.user.url).encode("utf-8", errors='ignore'),
+                                            str(tweet.user.description).encode("utf-8", errors='ignore'),
+                                            str(tweet.place).encode("utf-8", errors='ignore'),
+                                            find_key_in_dictionary(tweet.entities, "hashtags"),
+                                            find_key_in_dictionary(tweet.entities, "urls"),
+                                            find_key_in_dictionary(tweet.entities, "user_mentions")])
+                except:
+                    print("exception")
 
-    csvCursor.close()
+        csvCursor.close()
