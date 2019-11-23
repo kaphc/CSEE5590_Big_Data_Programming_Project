@@ -3,8 +3,8 @@ import Logger
 import pyspark as ps
 import time
 
-from pyspark.ml import Pipeline
-from pyspark.ml.classification import LogisticRegression
+from pyspark.ml import Pipeline, PipelineModel
+from pyspark.ml.classification import LogisticRegression, LogisticRegressionModel
 from pyspark.ml.evaluation import BinaryClassificationEvaluator
 from pyspark.ml.feature import HashingTF, IDF, Tokenizer, StringIndexer
 from pyspark.sql import SQLContext
@@ -87,25 +87,36 @@ if __name__ == '__main__':
 
     sql_context, spark_context = create_spark_context(logger)
 
-    data_frame = read_csv_to_df(logger, sql_context, Constants.reading_format, Constants.read_header,
-                                Constants.infer_schema, Constants.twitter_cleaned_data_path)
-
-    data_frame = remove_na(logger, data_frame)
-
-    train_set, val_set, test_set = split_data_frame(logger, data_frame, Constants.train_size,
-                                                    Constants.val_size, Constants.test_size,
-                                                    Constants.seed_value)
-
-    train_data_frame, val_data_frame, test_data_frame = transform_data_set(logger, train_set, val_set, test_set,
-                                                                           Constants.feature_column_name,
-                                                                           Constants.target_column_name,
-                                                                           Constants.number_of_features,
-                                                                           Constants.document_frequency,
-                                                                           Constants.sentiment_tf_idf_model_path)
-
-    sentiment_analysis_model = train_data_set(logger, train_data_frame, Constants.max_iter)
-    evaluate(logger, sentiment_analysis_model, test_data_frame)
-    sentiment_analysis_model.save(Constants.sentiment_analysis_model_path)
-
-    logger.info("Data pre processing has taken ")
-    logger.info("--- %s seconds ---" % (time.time() - start_time))
+    # data_frame = read_csv_to_df(logger, sql_context, Constants.reading_format, Constants.read_header,
+    #                             Constants.infer_schema, Constants.twitter_cleaned_data_path)
+    #
+    # data_frame = remove_na(logger, data_frame)
+    #
+    # train_set, val_set, test_set = split_data_frame(logger, data_frame, Constants.train_size,
+    #                                                 Constants.val_size, Constants.test_size,
+    #                                                 Constants.seed_value)
+    #
+    # train_data_frame, val_data_frame, test_data_frame = transform_data_set(logger, train_set, val_set, test_set,
+    #                                                                        Constants.feature_column_name,
+    #                                                                        Constants.target_column_name,
+    #                                                                        Constants.number_of_features,
+    #                                                                        Constants.document_frequency,
+    #                                                                        Constants.sentiment_tf_idf_model_path)
+    #
+    # sentiment_analysis_model = train_data_set(logger, train_data_frame, Constants.max_iter)
+    # evaluate(logger, sentiment_analysis_model, test_data_frame)
+    # sentiment_analysis_model.save(Constants.sentiment_analysis_model_path)
+    #
+    # logger.info("Data pre processing has taken ")
+    # logger.info("--- %s seconds ---" % (time.time() - start_time))
+    model = PipelineModel.load(Constants.sentiment_tf_idf_model_path)
+    v = sql_context.createDataFrame([
+        ("a", "tayalejandro noooo it is for flu and cold apparently we catch colds from the nasty airplane air and not washing hands"),
+        ("h", "trying to clean the anti virus rogue software off of client computer s using malwarebytes wish me luck"),
+        ("b", "cant wait to watch the mtv movie awards i am sure it will be great happy dance")
+    ], ["_c0", "text"])
+    v = model.transform(v)
+    print(v.show())
+    model2 = LogisticRegressionModel.load(Constants.sentiment_analysis_model_path)
+    v = model2.transform(v)
+    print(v.show())

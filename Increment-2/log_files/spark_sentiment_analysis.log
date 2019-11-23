@@ -48,3 +48,13 @@ Preparing the track list
 Listening on port: 9009
 2019-11-21 21:27:50,145 - Twitter Streaming to TCP - INFO - 
 Twitter Authentication has been setup successfully
+2019-11-22 20:58:31,415 - Spark Sentiment Analysis - INFO - 
+Created a Spark Context
+2019-11-22 20:59:42,491 - Spark Sentiment Analysis - INFO - 
+Created a Spark Context
+2019-11-22 21:00:08,197 - Spark Sentiment Analysis - INFO - 
+Created a Spark Context
+2019-11-22 21:01:07,525 - Spark Sentiment Analysis - INFO - 
+Created a Spark Context
+2019-11-22 21:01:58,307 - Spark Sentiment Analysis - INFO - 
+Created a Spark Context

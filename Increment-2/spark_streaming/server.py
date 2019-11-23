@@ -7,7 +7,10 @@ import time
 import Logger
 import Constants
 import credentials.twitter_credentials as tc
-import random
+import pyspark as ps
+from pyspark.sql import SQLContext
+from pyspark.ml import PipelineModel
+from pyspark.ml.classification import LogisticRegressionModel
 
 
 def set_up_tcp_connection(log):
@@ -30,6 +33,17 @@ def set_twitter_authentication(log):
     return auth
 
 
+def create_spark_context(log):
+    try:
+        conf = ps.SparkConf().setAll([('spark.executor.memory', '16g'), ('spark.driver.memory', '16g')])
+        sc = ps.SparkContext(conf=conf)
+        sql_c = SQLContext(sc)
+        log.info("Created a Spark Context")
+        return sql_c, sc
+    except ValueError as e:
+        log.error(e)
+
+
 class TweetsListener(StreamListener):
 
     def __init__(self, csocket):
@@ -41,41 +55,30 @@ class TweetsListener(StreamListener):
             s = self.client_socket
             s.listen(5)  # Now wait for client connection.
             c, addr = s.accept()  # Establish connection with client.
-
             print("Received request from: " + str(addr))
-
             msg = json.loads(data)
-            user = json.loads(json.dumps(msg['user']))
 
-            place_type = " "
-            if msg['place'] is not None:
-                if msg['place']['country_code'] is not None:
-                    place_type = msg['place']['country_code']
-                    print(place_type)
-
-            lat_long = " "
-            if msg['place'] is not None:
-                print(msg['place'])
-
+            tweet_time = msg['created_at']
+            text = msg['text'].replace('\n', '')
             hashtags = " "
             if msg['entities'] is not None:
                 if msg['entities']['hashtags'] is not None:
                     for hashtag in msg['entities']['hashtags']:
                         hashtags = hashtags + " " + hashtag['text']
 
-            timeZone = " "
-            if msg['user'] is not None:
-                if msg['user']['time_zone'] is not None:
-                    timeZone = msg['user']['time_zone']
+            model = PipelineModel.load(Constants.sentiment_tf_idf_model_path)
+            v = sql_context.createDataFrame([
+                ("a", msg['text'].replace('\n', '')),
+            ], ["_c0", "text"])
+            v = model.transform(v)
+            model2 = LogisticRegressionModel.load(Constants.sentiment_analysis_model_path)
+            v = model2.transform(v)
+            v_list = v.select('prediction').collect()
+            sentiment = str(v_list[0].prediction)
 
-            # location = json.loads(
-            #     str(msg['place']['bounding_box']) if msg['place']['bounding_box'] is not None else '{}')
-            s_data = msg['id_str'] + ' ~@ ' + msg['text'].replace('\n', '') + ' ~@ ' + \
-                     str(random.choice([0, 1])) + ' ~@ ' + \
-                     str(hashtags) + ' ~@ '
+            s_data = tweet_time + ' ~@ ' + text + ' ~@ ' + sentiment + ' ~@ ' + str(hashtags)
 
             print(s_data.encode('utf-8'))
-
             c.send(s_data.encode('utf-8'))
             c.close()
         except BaseException as e:
@@ -87,22 +90,13 @@ class TweetsListener(StreamListener):
         return True
 
 
-def get_track_list(log, filepath):
-    log.info("Preparing the track list")
-    track_list = []
-    with open(filepath) as fp:
-        line = fp.readline()
-        while line:
-            line = fp.readline()
-            track_list.append(line.strip('\n'))
-    return track_list
-
-
 if __name__ == "__main__":
     start_time = time.time()
     log_file = Logger.LoggerFile()
     logger = log_file.set_logger_file('Twitter Streaming to TCP',
-                                      Constants.spark_content_classification_log_file_name)
+                                      Constants.spark_streaming_log_file_name)
+
+    sql_context, spark_context = create_spark_context(logger)
 
     socket_object = set_up_tcp_connection(logger)
     twitter_auth = set_twitter_authentication(logger)
