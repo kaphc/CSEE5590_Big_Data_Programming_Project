@@ -1,0 +1,60 @@
+2019-11-21 18:50:34,515 - Spark Sentiment Analysis - INFO - 
+Created a Spark Context
+2019-11-21 18:50:34,515 - Spark Sentiment Analysis - INFO - 
+Data has been read successfully.
+2019-11-21 21:16:13,118 - Spark Sentiment Analysis - INFO - 
+Created a Spark Context
+2019-11-21 21:16:13,118 - Spark Sentiment Analysis - INFO - 
+Data has been read successfully.
+2019-11-21 21:16:22,238 - Spark Sentiment Analysis - INFO - 
+1599999 has been read.
+2019-11-21 21:16:22,238 - Spark Sentiment Analysis - INFO - 
+NA's has been removed from the dataset.
+2019-11-21 21:16:22,327 - Spark Sentiment Analysis - INFO - 
+Dataframe has been split into 0.98,0.01,0.01 size for train, val and test
+2019-11-21 21:16:22,371 - Spark Sentiment Analysis - INFO - 
+Tokenizing the feature column and output is written into words column
+2019-11-21 21:16:22,415 - Spark Sentiment Analysis - INFO - 
+Hashing the words column and output is written into tf column
+2019-11-21 21:16:22,431 - Spark Sentiment Analysis - INFO - 
+IDF the tf column and output is written into  features column
+2019-11-21 21:16:22,455 - Spark Sentiment Analysis - INFO - 
+Labeling the target column and output is written into label column
+2019-11-21 21:16:22,495 - Spark Sentiment Analysis - INFO - 
+Making all the above method into a pipeline
+2019-11-21 21:16:22,495 - Spark Sentiment Analysis - INFO - 
+Fit train, test and validation set on the created pipeline
+2019-11-21 21:16:46,152 - Spark Sentiment Analysis - INFO - 
+Fitting the train dataset using LogisticRegression
+2019-11-21 21:17:08,410 - Spark Sentiment Analysis - INFO - 
+Evaluating the trained model
+2019-11-21 21:17:15,916 - Spark Sentiment Analysis - INFO - 
+0.8353073427913116
+2019-11-21 21:17:16,499 - Spark Sentiment Analysis - INFO - 
+Data pre processing has taken 
+2019-11-21 21:17:16,503 - Spark Sentiment Analysis - INFO - 
+--- 77.0855405330658 seconds ---
+2019-11-21 21:20:46,555 - Spark Sentiment Analysis - INFO - 
+Created a Spark Context
+2019-11-21 21:23:20,187 - Spark Sentiment Analysis - INFO - 
+Created a Spark Context
+2019-11-21 21:26:26,093 - Twitter Streaming to TCP - INFO - 
+Listening on port: 9009
+2019-11-21 21:26:26,093 - Twitter Streaming to TCP - INFO - 
+Twitter Authentication has been setup successfully
+2019-11-21 21:26:26,093 - Twitter Streaming to TCP - INFO - 
+Preparing the track list
+2019-11-21 21:27:50,145 - Twitter Streaming to TCP - INFO - 
+Listening on port: 9009
+2019-11-21 21:27:50,145 - Twitter Streaming to TCP - INFO - 
+Twitter Authentication has been setup successfully
+2019-11-22 20:58:31,415 - Spark Sentiment Analysis - INFO - 
+Created a Spark Context
+2019-11-22 20:59:42,491 - Spark Sentiment Analysis - INFO - 
+Created a Spark Context
+2019-11-22 21:00:08,197 - Spark Sentiment Analysis - INFO - 
+Created a Spark Context
+2019-11-22 21:01:07,525 - Spark Sentiment Analysis - INFO - 
+Created a Spark Context
+2019-11-22 21:01:58,307 - Spark Sentiment Analysis - INFO - 
+Created a Spark Context

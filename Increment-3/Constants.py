@@ -26,7 +26,6 @@ tcp_streaming_log_file_name = "../log_files/tcp_streaming.log"
 TCP_IP = "localhost"
 port_number = 9009
 twitter_streaming_time = 1
-stock_companies_list_path = "../data/stock_companies_list"
 
 # tcp -> spark streaming
 spark_streaming_log_file_name = '../log_files/spark_streaming_log_file_name.log'

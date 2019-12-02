@@ -75,8 +75,6 @@ class TweetsListener(StreamListener):
             v = model2.transform(v)
             v_list = v.select('prediction').collect()
             sentiment = str(v_list[0].prediction)
-            if sentiment == '0.0':
-                sentiment = '-1.0'
 
             s_data = tweet_time + ' ~@ ' + text + ' ~@ ' + sentiment + ' ~@ ' + str(hashtags)
 
@@ -92,17 +90,6 @@ class TweetsListener(StreamListener):
         return True
 
 
-def get_track_list(log, filepath):
-    log.info("Preparing the track list")
-    track_list = []
-    with open(filepath) as fp:
-        line = fp.readline()
-        while line:
-            line = fp.readline()
-            track_list.append(line.strip('\n'))
-    return track_list
-
-
 if __name__ == "__main__":
     start_time = time.time()
     log_file = Logger.LoggerFile()
@@ -115,4 +102,4 @@ if __name__ == "__main__":
     twitter_auth = set_twitter_authentication(logger)
 
     twitter_stream = Stream(twitter_auth, TweetsListener(socket_object))
-    twitter_stream.filter(track=get_track_list(logger, Constants.stock_companies_list_path))
+    twitter_stream.filter(track="Apple")
